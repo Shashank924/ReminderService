@@ -47,9 +47,39 @@ const updateTicket = async (ticketId , data) => {
     }
 }
 
+const sendConfirmationMail = async (data) => {
+
+    try {
+        sendBasicEmail(
+            'Reminder Service',
+            data.recipientMail,
+            data.subject,
+            data.content
+        );
+        return true;
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+const subscribeEvents = async (payload) => {
+    const service = payload.service;
+    const data = { ...payload.data , recipientMail : 'mailforprojectrelatedwork@gmail.com'
+    }
+    switch(service) {
+        case 'Confirmation Mail' :
+            sendConfirmationMail(data);
+            break;
+        default :
+            await createTicket(data);
+    }
+}
+
 module.exports = {
     sendBasicEmail,
     createTicket,
     getAllPendingEmails,
-    updateTicket
+    updateTicket,
+    subscribeEvents
 }
